@@ -346,19 +346,6 @@ def pattern():
             obj = []
             time_list= []
     
-    file = pd.read_csv('csv/go_out.csv')
-    # データフレーム型に格納
-    df = pd.DataFrame(file)
-
-    #重複を確認
-    df.duplicated()
-
-    #重複を削除
-    sindf = df.drop_duplicates()
-    sindf
-
-    # CSVで保存
-    sindf.to_csv('csv/go_out.csv', index=False, encoding='utf-8')
 
 if __name__ == '__main__':#直接yobareru.pyを実行した時だけ、def test()を実行する
     pattern()
