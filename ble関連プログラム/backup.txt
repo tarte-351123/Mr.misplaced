@@ -1,0 +1,420 @@
+        # 配列のコピー
+        with open(filename, encoding='utf8', newline='') as f:
+            pattern_data = []
+            csvreader = csv.reader(f)
+            for row in csvreader:
+                pattern_data.append(row)
+            time_count_sun = [0]*24 
+            time_count_mon = [0]*24 
+            time_count_tue = [0]*24 
+            time_count_wed = [0]*24 
+            time_count_thu = [0]*24 
+            time_count_fri = [0]*24 
+            time_count_sat = [0]*24 
+
+            time_count_sun_all = [0]*24 
+            time_count_mon_all = [0]*24 
+            time_count_tue_all = [0]*24 
+            time_count_wed_all = [0]*24 
+            time_count_thu_all = [0]*24 
+            time_count_fri_all = [0]*24 
+            time_count_sat_all = [0]*24 
+
+            data_x_sun = []
+            data_y_sun = []
+            data_x_mon = []
+            data_y_mon = []
+            data_x_tue = []
+            data_y_tue = []
+            data_x_wed = []
+            data_y_wed = []
+            data_x_thu = []
+            data_y_thu = []
+            data_x_fri = []
+            data_y_fri = []
+            data_x_sat = []
+            data_y_sat = []
+
+            data_sun = []
+            data_mon = []
+            data_tue = []
+            data_wed = []
+            data_thu = []
+            data_fri = []
+            data_sat = []
+
+            #曜日と時間の関係を表示
+
+            for i in pattern_data:
+                # ◯◯時の部分
+                for j in range(24):
+                    if int(i[2][3:5]) == j:
+                        if i[2][0:1] == "日":
+                            time_count_sun[j]+=1
+                            if "phone" in i[3] and "wallet" in i[3] and "bag" in i[3]:
+                                time_count_sun_all[j]+=1
+                        elif i[2][0:1] == "月":
+                            time_count_mon[j]+=1
+                            if "phone" in i[3] and "wallet" in i[3] and "bag" in i[3]:
+                                time_count_mon_all[j]+=1
+                        elif i[2][0:1] == "火":
+                            time_count_tue[j]+=1
+                            if "phone" in i[3] and "wallet" in i[3] and "bag" in i[3]:
+                                time_count_tue_all[j]+=1
+                        elif i[2][0:1] == "水":
+                            time_count_wed[j]+=1
+                            if "phone" in i[3] and "wallet" in i[3] and "bag" in i[3]:
+                                time_count_wed_all[j]+=1
+                        elif i[2][0:1] == "木":
+                            time_count_thu[j]+=1
+                            if "phone" in i[3] and "wallet" in i[3] and "bag" in i[3]:
+                                time_count_thu_all[j]+=1
+                        elif i[2][0:1] == "金":
+                            time_count_fri[j]+=1
+                            if "phone" in i[3] and "wallet" in i[3] and "bag" in i[3]:
+                                time_count_fri_all[j]+=1
+                        elif i[2][0:1] == "土":
+                            time_count_sat[j]+=1
+                            if "phone" in i[3] and "wallet" in i[3] and "bag" in i[3]:
+                                time_count_sat_all[j]+=1
+                    
+            for i in range(24):
+
+                data_y_sun.append(time_count_sun[i])
+                data_x_sun.append(i)
+                data_list = [i,time_count_sun[i]]
+                data_sun.append(data_list)
+
+                data_y_mon.append(time_count_mon[i])
+                data_x_mon.append(i)
+                data_list = [i,time_count_mon[i]]
+                data_mon.append(data_list)
+
+                data_y_tue.append(time_count_tue[i])
+                data_x_tue.append(i)
+                data_list = [i,time_count_tue[i]]
+                data_tue.append(data_list)
+
+                data_y_wed.append(time_count_wed[i])
+                data_x_wed.append(i)
+                data_list = [i,time_count_wed[i]]
+                data_wed.append(data_list)
+
+                data_y_thu.append(time_count_thu[i])
+                data_x_thu.append(i)
+                data_list = [i,time_count_thu[i]]
+                data_thu.append(data_list)
+
+                data_y_fri.append(time_count_fri[i])
+                data_x_fri.append(i)
+                data_list = [i,time_count_fri[i]]
+                data_fri.append(data_list)
+
+                data_y_sat.append(time_count_sat[i])
+                data_x_sat.append(i)
+                data_list = [i,time_count_sat[i]]
+                data_sat.append(data_list)
+
+            # plt.scatter(data_x,data_y)
+            # plt.show()
+            n_clusters_sun = 5
+            pred_sun = KMeans(n_clusters_sun).fit_predict(data_sun)
+
+            n_clusters_mon = 5
+            pred_mon = KMeans(n_clusters_mon).fit_predict(data_mon)
+
+            n_clusters_tue = 5
+            pred_tue = KMeans(n_clusters_tue).fit_predict(data_tue)
+
+            n_clusters_wed = 5
+            pred_wed = KMeans(n_clusters_wed).fit_predict(data_wed)
+
+            n_clusters_thu = 5
+            pred_thu = KMeans(n_clusters_thu).fit_predict(data_thu)
+
+            n_clusters_fri = 5
+            pred_fri = KMeans(n_clusters_fri).fit_predict(data_fri)
+
+            n_clusters_sat = 8
+            pred_sat = KMeans(n_clusters_sat).fit_predict(data_sat)
+
+            with open("csv/pattern.csv", "w", newline="", encoding="utf8") as f:
+                print()
+
+            color_list = ["r", "b", "g", "y", "m", "c", "brown", "purple","pink"]
+            print("日曜日")
+            for i in range(n_clusters_sun):
+                data_x = []
+                data_y = []
+                center_x = 0
+                center_y = 0
+                count = 0
+                for j in range(24):
+
+                    if(pred_sun[j]==i):
+
+                        data_x.append(j)
+                        data_y.append(time_count_sun[j])
+
+                        if time_count_sun[j] != 0:
+                            center_x +=j
+                            center_y +=time_count_sun[j]
+                            count +=1
+                    
+                if count !=0:
+                    center_x = center_x / count
+                    center_y = center_y / count
+                if center_x!=0:
+                    # print(str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時")
+                    go_out_add = 0
+                    part_add = 0
+                    for j in range (int(center_x)-1 , int(center_x)+2):
+                        # print(time_count_sun[j],time_count_sun_all[j])
+                        go_out_add += time_count_sun[j]
+                        part_add += time_count_sun_all[j]
+                    if go_out_add!=0:
+                        # print("バイトの外出率："+str(int(part_add/go_out_add*100))+"%")
+                        with open("csv/pattern.csv", "a", newline="", encoding="utf8") as f:
+                            writer = csv.writer(f) 
+                            data_list = ["日曜日",str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時", str(int(part_add/go_out_add*100))+"%"]
+                            writer.writerow(data_list)
+                            print(data_list)
+            print()
+
+
+            print("月曜日")
+            for i in range(n_clusters_mon):
+                data_x = []
+                data_y = []    
+                center_x = 0
+                center_y = 0
+                count = 0
+                for j in range(24):
+                    if(pred_mon[j]==i):
+                        data_x.append(j)
+                        data_y.append(time_count_mon[j])
+                        if time_count_mon[j] != 0:
+                            center_x +=j
+                            center_y +=time_count_mon[j]
+                            count +=1
+                    
+                if count !=0:
+                    center_x = center_x / count
+                    center_y = center_y / count
+                if center_x!=0:
+                    #print(str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時")
+                    go_out_add = 0
+                    part_add = 0
+                    for j in range (int(center_x)-1 , int(center_x)+2):
+                        # print(time_count_sun[j],time_count_sun_all[j])
+                        go_out_add += time_count_mon[j]
+                        part_add += time_count_mon_all[j]
+                    if go_out_add!=0:
+                        # print("バイトの外出率："+str(int(part_add/go_out_add*100))+"%")
+                        with open("csv/pattern.csv", "a", newline="", encoding="utf8") as f:
+                            writer = csv.writer(f) 
+                            data_list = ["月曜日",str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時", str(int(part_add/go_out_add*100))+"%"]
+                            writer.writerow(data_list)
+                            print(data_list)
+            print()
+
+
+            print("火曜日")
+            for i in range(n_clusters_tue):
+                data_x = []
+                data_y = []
+                center_x = 0
+                center_y = 0
+                count = 0
+                for j in range(24):
+                    if(pred_tue[j]==i):
+                        data_x.append(j)
+                        data_y.append(time_count_tue[j])
+                        if time_count_tue[j] != 0:
+                            center_x +=j
+                            center_y +=time_count_tue[j]
+                            count +=1
+                if count !=0:
+                    center_x = center_x / count
+                    center_y = center_y / count
+                if center_x!=0:
+                    #print(str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時")
+                    go_out_add = 0
+                    part_add = 0
+                    for j in range (int(center_x)-1 , int(center_x)+2):
+                        # print(time_count_sun[j],time_count_sun_all[j])
+                        go_out_add += time_count_tue[j]
+                        part_add += time_count_tue_all[j]
+                    if go_out_add!=0:
+                        #print("バイトの外出率："+str(int(part_add/go_out_add*100))+"%")
+                        with open("csv/pattern.csv", "a", newline="", encoding="utf8") as f:
+                            writer = csv.writer(f) 
+                            data_list = ["火曜日",str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時", str(int(part_add/go_out_add*100))+"%"]
+                            writer.writerow(data_list)
+                            print(data_list)
+            print()
+
+
+            print("水曜日")
+            for i in range(n_clusters_wed):
+                data_x = []
+                data_y = []
+                center_x = 0
+                center_y = 0
+                count = 0
+                for j in range(24):
+
+                    if(pred_wed[j]==i):
+
+                        data_x.append(j)
+                        data_y.append(time_count_wed[j])
+
+                        if time_count_wed[j] != 0:
+                            center_x +=j
+                            center_y +=time_count_wed[j]
+                            count +=1
+                    
+                if count !=0:
+                    center_x = center_x / count
+                    center_y = center_y / count
+                if center_x!=0:
+                    #print(str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時")
+                    go_out_add = 0
+                    part_add = 0
+                    for j in range (int(center_x)-1 , int(center_x)+2):
+                        # print(time_count_sun[j],time_count_sun_all[j])
+                        go_out_add += time_count_wed[j]
+                        part_add += time_count_wed_all[j]
+                    if go_out_add!=0:
+                    # print("バイトの外出率："+str(int(part_add/go_out_add*100))+"%")
+                        with open("csv/pattern.csv", "a", newline="", encoding="utf8") as f:
+                            writer = csv.writer(f) 
+                            data_list = ["水曜日",str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時", str(int(part_add/go_out_add*100))+"%"]
+                            writer.writerow(data_list)
+                            print(data_list)
+            print()
+
+
+            print("木曜日")
+            for i in range(n_clusters_thu):
+                data_x = []
+                data_y = []
+                center_x = 0
+                center_y = 0
+                count = 0
+                for j in range(24):
+
+                    if(pred_thu[j]==i):
+
+                        data_x.append(j)
+                        data_y.append(time_count_thu[j])
+
+                        if time_count_thu[j] != 0:
+                            center_x +=j
+                            center_y +=time_count_thu[j]
+                            count +=1
+                    
+                if count !=0:
+                    center_x = center_x / count
+                    center_y = center_y / count
+                if center_x!=0:
+                    #print(str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時")
+                    go_out_add = 0
+                    part_add = 0
+                    for j in range (int(center_x)-1 , int(center_x)+2):
+                        # print(time_count_sun[j],time_count_sun_all[j])
+                        go_out_add += time_count_thu[j]
+                        part_add += time_count_thu_all[j]
+                    if go_out_add!=0:
+                        #print("バイトの外出率："+str(int(part_add/go_out_add*100))+"%")
+                        with open("csv/pattern.csv", "a", newline="", encoding="utf8") as f:
+                            writer = csv.writer(f) 
+                            data_list = ["木曜日",str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時", str(int(part_add/go_out_add*100))+"%"]
+                            writer.writerow(data_list)
+                            print(data_list)
+            print()
+
+
+            print("金曜日")
+            for i in range(n_clusters_fri):
+                data_x = []
+                data_y = []
+                center_x = 0
+                center_y = 0
+                count = 0
+                for j in range(24):
+
+                    if(pred_fri[j]==i):
+
+                        data_x.append(j)
+                        data_y.append(time_count_fri[j])
+
+                        if time_count_fri[j] != 0:
+                            center_x +=j
+                            center_y +=time_count_fri[j]
+                            count +=1
+                    
+                if count !=0:
+                    center_x = center_x / count
+                    center_y = center_y / count
+                if center_x!=0:
+                    #print(str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時")
+                    go_out_add = 0
+                    part_add = 0
+                    for j in range (int(center_x)-1 , int(center_x)+2):
+                        # print(time_count_sun[j],time_count_sun_all[j])
+                        go_out_add += time_count_fri[j]
+                        part_add += time_count_fri_all[j]
+                    if go_out_add!=0:
+                        #print("バイトの外出率："+str(int(part_add/go_out_add*100))+"%")
+                        with open("csv/pattern.csv", "a", newline="", encoding="utf8") as f:
+                            writer = csv.writer(f) 
+                            data_list = ["金曜日",str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時", str(int(part_add/go_out_add*100))+"%"]
+                            writer.writerow(data_list)
+                            print(data_list)
+
+            data_x = []
+            data_y = []
+            for j in range(24):
+                data_x.append(j)
+                data_y.append(time_count_fri_all[j])
+            print()
+
+
+            print("土曜日")
+            for i in range(n_clusters_sat):
+                data_x = []
+                data_y = []
+                center_x = 0
+                center_y = 0
+                count = 0
+                for j in range(24):
+
+                    if(pred_sat[j]==i):
+
+                        data_x.append(j)
+                        data_y.append(time_count_sat[j])
+
+                        if time_count_sat[j] != 0:
+                            center_x +=j
+                            center_y +=time_count_sat[j]
+                            count +=1
+
+                if count !=0:
+                    center_x = center_x / count
+                    center_y = center_y / count
+                if center_x!=0:
+                    #print(str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時")
+                    go_out_add = 0
+                    part_add = 0
+                    for j in range (int(center_x)-1 , int(center_x)+2):
+                        # print(time_count_sun[j],time_count_sun_all[j])
+                        go_out_add += time_count_sat[j]
+                        part_add += time_count_sat_all[j]
+                    if go_out_add!=0:
+                        #print("バイトの外出率："+str(int(part_add/go_out_add*100))+"%")
+                        with open("csv/pattern.csv", "a", newline="", encoding="utf8") as f:
+                            writer = csv.writer(f) 
+                            data_list = ["土曜日",str(int(center_x)-1).zfill(2)+"時〜"+str(int(center_x)+1).zfill(2)+"時", str(int(part_add/go_out_add*100))+"%"]
+                            writer.writerow(data_list)
+                            print(data_list)
