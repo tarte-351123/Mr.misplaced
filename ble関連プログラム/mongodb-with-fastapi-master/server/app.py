@@ -732,6 +732,15 @@ async def delete_data():
 
     raise HTTPException(status_code=404, detail=f"data not found")
 
+@app.delete("/date/", response_description="Delete a data", tags=["dataController"])
+async def delete_data():
+    delete_result01 = await db["date"].delete_one({})
+
+    if delete_result01.deleted_count == 1:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"200 data deleate OK!"})
+
+    raise HTTPException(status_code=404, detail=f"data not found")
+
 
 @app.post("/", response_description="Add new Current Infomationn", response_model=models.AfterAddCurrentInfoModel, tags=["CurrentInfoController"])
 async def create_current_Info(current_info: models.CurrentInfoModel = Body(...)):

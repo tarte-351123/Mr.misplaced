@@ -9,8 +9,12 @@ def pattern():
     GET_URL_P = "http://localhost:8000/result_phone/"
     GET_URL_W = "http://localhost:8000/result_wallet/"
     GET_URL_B = "http://localhost:8000/result_bag/"
+    GET_URL_T = "http://localhost:8000/date/"
     POST_URL = "http://localhost:8000/pattern/"
 
+    response = requests.get(GET_URL_T)
+    
+    
     
     #データのこぴー
     p_data=[]
