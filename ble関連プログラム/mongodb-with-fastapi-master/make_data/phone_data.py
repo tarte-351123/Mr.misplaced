@@ -29,15 +29,15 @@ def phone_data():
     #より近いラズパイの hostname を格納
     near = ""
     last_time = ""
-    with open("csv/ohashi01_phone.csv", "w", newline="", encoding="utf-8") as f:
+    with open("ble関連プログラム/csv/ohashi01_phone.csv", "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
                 tag = (["hostname","count", "time","rssi"])
                 writer.writerow(tag)
-    with open("csv/ohashi02_phone.csv", "w", newline="", encoding="utf-8") as f:
+    with open("ble関連プログラム/csv/ohashi02_phone.csv", "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
                 tag = (["hostname","count","time", "rssi"])
                 writer.writerow(tag)
-    with open("csv/result_phone.csv", "w", newline="", encoding="utf-8") as f:
+    with open("ble関連プログラム/csv/result_phone.csv", "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
                 tag = (["count","time","living_rssi","genkan_rssi","result"])
 
@@ -78,7 +78,7 @@ def phone_data():
         last_time = i["time"]
 
         if i["hostname"]=="ohashi01":
-            with open("csv/ohashi01_phone.csv", "a", newline="", encoding="utf8") as f:
+            with open("ble関連プログラム/csv/ohashi01_phone.csv", "a", newline="", encoding="utf8") as f:
 
                 writer = csv.writer(f)
                 data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
@@ -86,7 +86,7 @@ def phone_data():
                 n1 +=3
 
         elif i["hostname"]=="ohashi02":
-            with open("csv/ohashi02_phone.csv", "a", newline="", encoding="utf8") as f:
+            with open("ble関連プログラム/csv/ohashi02_phone.csv", "a", newline="", encoding="utf8") as f:
 
                 writer = csv.writer(f)
                 data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
@@ -100,14 +100,14 @@ def phone_data():
 
     import csv
     import re
-    with open("csv/ohashi01_phone.csv", encoding='utf-8', newline='') as f:
+    with open("ble関連プログラム/csv/ohashi01_phone.csv", encoding='utf-8', newline='') as f:
         csvreader = csv.reader(f)
         l_data=[]
         #データのこぴー
         for row in csvreader:
             l_data.append(row)
 
-    with open("csv/ohashi02_phone.csv", encoding='utf-8', newline='') as f:
+    with open("ble関連プログラム/csv/ohashi02_phone.csv", encoding='utf-8', newline='') as f:
         csvreader = csv.reader(f)
         g_data=[]
         #データのこぴー
@@ -231,7 +231,7 @@ def phone_data():
                 
                 #print(living_data[i][1],living_data[i][2],living_data[i][3],genkan_data[j][3],place)
 
-                with open("csv/result_phone.csv", "a", newline="", encoding="utf8") as f:
+                with open("ble関連プログラム/csv/result_phone.csv", "a", newline="", encoding="utf8") as f:
 
                     writer = csv.writer(f)
                     data_list = [living_data[i][1],living_data[i][2],living_data[i][3],genkan_data[j][3],place,num]
