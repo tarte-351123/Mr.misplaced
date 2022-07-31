@@ -66,6 +66,59 @@ async def create_user(user: models.AddUserModel = Body(...)):
     # 201コードを返す
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
 
+@app.post("/ohashi01_phone/", response_description="Add new user", tags=["UserController"])
+async def create_user(user: models.DataModel = Body(...)):
+
+    # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
+    user = jsonable_encoder(user)
+    user['is_active'] = True
+
+    try:
+        # 既に登録されている名前は登録できないようにする
+        await db["ohashi01_phone"].create_index("name", unique=True)
+        await db["ohsahi01_phone"].insert_one(user)
+    except:
+        raise HTTPException(status_code=400, detail=f"Name: '{user['name']}' is already been registered")
+    # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
+    # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
+    # 201コードを返す
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
+
+@app.post("/ohashi01_wallet/", response_description="Add new user", tags=["UserController"])
+async def create_user(user: models.DataModel = Body(...)):
+
+    # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
+    user = jsonable_encoder(user)
+    user['is_active'] = True
+
+    try:
+        # 既に登録されている名前は登録できないようにする
+        await db["ohashi01_wallet"].create_index("name", unique=True)
+        await db["ohsahi01_wallet"].insert_one(user)
+    except:
+        raise HTTPException(status_code=400, detail=f"Name: '{user['name']}' is already been registered")
+    # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
+    # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
+    # 201コードを返す
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
+
+@app.post("/ohashi01_bag/", response_description="Add new user", tags=["UserController"])
+async def create_user(user: models.DataModel = Body(...)):
+
+    # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
+    user = jsonable_encoder(user)
+    user['is_active'] = True
+
+    try:
+        # 既に登録されている名前は登録できないようにする
+        await db["ohashi01_bag"].create_index("name", unique=True)
+        await db["ohsahi01_bag"].insert_one(user)
+    except:
+        raise HTTPException(status_code=400, detail=f"Name: '{user['name']}' is already been registered")
+    # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
+    # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
+    # 201コードを返す
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
 
 @app.post("/phone/", response_description="Add new data", tags=["dataController"])
 async def create_data(data: models.AddDataModel = Body(...)):

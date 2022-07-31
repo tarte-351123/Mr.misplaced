@@ -145,6 +145,29 @@ class AddDataModel(BaseModel):
                 "time": "2021-12-10 16:13:20"
             }
         }
+        
+class DataModel(BaseModel):
+    # 変数名に_をつけるとプライベート変数と解釈されてしまうため，alias="_id"で名前を変えている
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+
+    # 登録の型を決める場合はここを操作
+    hostname: str = Field(...)
+    count: int = Field(...)
+    time: str = Field(...)
+    rssi: int = Field(...)
+
+    class Config:
+        allow_population_by_field_name = True  # エイリアスを使用するための設定
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+        schema_extra = {
+            "example": {
+                "hostname": "ohashi01",
+                "count": 256,
+                "time": "2022-07-30 18:18:51",
+                "rssi": 60
+            }
+        }
 
 class AddFixDataModel(BaseModel):
     # 変数名に_をつけるとプライベート変数と解釈されてしまうため，alias="_id"で名前を変えている

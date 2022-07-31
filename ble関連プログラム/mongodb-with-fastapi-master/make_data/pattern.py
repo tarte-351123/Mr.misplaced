@@ -128,6 +128,7 @@ def pattern():
             # print(start,end)
             data = [str(start) ,str(end),place]
             fix_b_data.append(data)
+    print(fix_b_data)
         
     for i in range (len(fix_b_data)+2):
         if fix_b_data[i][1] != fix_b_data[i+1][0]:

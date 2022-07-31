@@ -48,7 +48,6 @@ def bag_data():
 
     count = 1
 
-
     for i in data:
         day = int(i["time"][8:10])*3600*24
         hour = int(i["time"][11:13])*3600
