@@ -7,9 +7,12 @@ def bag_data():
     GET_URL = "http://localhost:8000/bag/"
     POST_URL = "http://localhost:8000/result_bag/"
     GET_DATE_URL = "http://localhost:8000/date/"
-
-    # for i in range (5):
-    #     delete = requests.delete(GET_URL)
+    
+    response = requests.get(POST_URL)
+    data = response.json()
+    
+    for i in range (len(data)):
+        requests.delete(POST_URL)
 
     # POSTリクエストを、リクエストボディ付きで送信する
     response = requests.get(GET_URL)
@@ -209,6 +212,7 @@ def bag_data():
     latest = datetime.strptime(date[0]["time"], '%Y-%m-%d %H:%M:%S')
     last_time = latest
     for i in range(len(living_data)):
+        # print(living_data,last_time)
         for j in range(len(genkan_data)):
             if living_data[i][1]==genkan_data[j][1]:
                 place=""
@@ -243,6 +247,7 @@ def bag_data():
                 }
                 
                 date = datetime.strptime(list(request_body.items())[1][1], '%Y-%m-%d %H:%M:%S')
+                print()
                 if (latest<date):
                     latest = date
                     response = requests.post(POST_URL, json=request_body)
