@@ -146,7 +146,7 @@ class AddDataModel(BaseModel):
             }
         }
         
-class DataModel(BaseModel):
+class MakeDataModel(BaseModel):
     # 変数名に_をつけるとプライベート変数と解釈されてしまうため，alias="_id"で名前を変えている
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
 

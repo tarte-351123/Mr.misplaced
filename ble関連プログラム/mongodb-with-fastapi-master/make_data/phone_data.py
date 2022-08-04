@@ -3,7 +3,7 @@ from attr import s
 
 def phone_data():
     import requests
-    import csv
+    import re
     from pymongo import MongoClient
     import requests
     import datetime
@@ -12,34 +12,23 @@ def phone_data():
     GET_URL = "http://localhost:8000/phone/"
     POST_URL = "http://localhost:8000/result_phone/"
     GET_DATE_URL = "http://localhost:8000/date/"
-    POST_DATE_URL = "http://localhost:8000/date/"
 
-    # for i in range (5):
-    #     delete = requests.delete(GET_URL)
+    response = requests.get(POST_URL)
+    data = response.json()
+    
+    for i in range (len(data)):
+        requests.delete(POST_URL)
 
 
     # POSTリクエストを、リクエストボディ付きで送信する
     response = requests.get(GET_URL)
-
     # dataというList型変数に全てのデータを格納
     data = response.json()
     #data.reverse()
 
-
     #より近いラズパイの hostname を格納
     near = ""
     last_time = ""
-    with open("ble関連プログラム/csv/ohashi01_phone.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                tag = (["hostname","count", "time","rssi"])
-                writer.writerow(tag)
-    with open("ble関連プログラム/csv/ohashi02_phone.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                tag = (["hostname","count","time", "rssi"])
-                writer.writerow(tag)
-    with open("ble関連プログラム/csv/result_phone.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                tag = (["count","time","living_rssi","genkan_rssi","result"])
 
     day = int(data[0]["time"][8:10])*3600*24
     hour = int(data[0]["time"][11:13])*3600
@@ -48,9 +37,10 @@ def phone_data():
     start_time = day+hour + minute +second
     n1=0
     n2=0
-    result=0
-
     count = 1
+
+    ohashi01 = []
+    ohashi02 = []
 
     for i in data:
         day = int(i["time"][8:10])*3600*24
@@ -73,71 +63,43 @@ def phone_data():
         # 次のデータと時間が違う場合
         elif i["time"] != data[count]["time"]:
             near = i["hostname"]
-
-
+            
         last_time = i["time"]
 
         if i["hostname"]=="ohashi01":
-            with open("ble関連プログラム/csv/ohashi01_phone.csv", "a", newline="", encoding="utf8") as f:
-
-                writer = csv.writer(f)
-                data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
-                writer.writerow(data_list)
-                n1 +=3
+            data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
+            ohashi01.append(data_list)
 
         elif i["hostname"]=="ohashi02":
-            with open("ble関連プログラム/csv/ohashi02_phone.csv", "a", newline="", encoding="utf8") as f:
-
-                writer = csv.writer(f)
-                data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
-                writer.writerow(data_list)
-                n2 +=3
+            data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
+            ohashi02.append(data_list)
+            
         if count < len(data)-3:
                 count +=1
 
-    f.close()
-            
-
-    import csv
-    import re
-    with open("ble関連プログラム/csv/ohashi01_phone.csv", encoding='utf-8', newline='') as f:
-        csvreader = csv.reader(f)
-        l_data=[]
-        #データのこぴー
-        for row in csvreader:
-            l_data.append(row)
-
-    with open("ble関連プログラム/csv/ohashi02_phone.csv", encoding='utf-8', newline='') as f:
-        csvreader = csv.reader(f)
-        g_data=[]
-        #データのこぴー
-        for row in csvreader:
-            g_data.append(row)
-
-
-    l_sec = int(re.split('[- /:]', l_data[1][2])[5])
-    l_min = int(re.split('[- /:]', l_data[1][2])[4])*60
-    l_hou = int(re.split('[- /:]', l_data[1][2])[3])*3600
-    l_day = int(re.split('[- /:]', l_data[1][2])[2])*24*3600
+    l_sec = int(re.split('[- /:]', ohashi01[1][2])[5])
+    l_min = int(re.split('[- /:]', ohashi01[1][2])[4])*60
+    l_hou = int(re.split('[- /:]', ohashi01[1][2])[3])*3600
+    l_day = int(re.split('[- /:]', ohashi01[1][2])[2])*24*3600
     l_start = (l_sec+l_min+l_hou+l_day)
 
-    g_sec = int(re.split('[- /:]', g_data[1][2])[5])
-    g_min = int(re.split('[- /:]', g_data[1][2])[4])*60
-    g_hou = int(re.split('[- /:]', g_data[1][2])[3])*3600
-    g_day = int(re.split('[- /:]', g_data[1][2])[2])*24*3600
+    g_sec = int(re.split('[- /:]', ohashi02[1][2])[5])
+    g_min = int(re.split('[- /:]', ohashi02[1][2])[4])*60
+    g_hou = int(re.split('[- /:]', ohashi02[1][2])[3])*3600
+    g_day = int(re.split('[- /:]', ohashi02[1][2])[2])*24*3600
     g_start = (g_sec+g_min+g_hou+g_day)
 
     living_data=[]
-    for i in range(1,len(l_data)-1):
+    for i in range(1,len(ohashi01)-1):
         #print(l_data[i])
-        living_data.append(l_data[i])
-        diff = int(l_data[i+1][1])-int(l_data[i][1])
+        living_data.append(ohashi01[i])
+        diff = int(ohashi01[i+1][1])-int(ohashi01[i][1])
 
         #値が取れなかった間隔
         if(diff<3600):
             while diff > 3:
                 diff -= 3
-                add = l_start+int(l_data[i+1][1])-diff
+                add = l_start+int(ohashi01[i+1][1])-diff
                 day = add//(24*3600)
                 if(day<=9):
                     day = str("0"+str(day))
@@ -163,49 +125,50 @@ def phone_data():
                 else:
                     sec = str(sec)
                 
-                date = l_data[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-                data = ["ohashi01",str(int(l_data[i+1][1])-diff),date,"-110"]
+                date = ohashi01[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
+                data = ["ohashi01",str(int(ohashi01[i+1][1])-diff),date,"-110"]
                 living_data.append(data)
 
             
     genkan_data=[]
-    for i in range(1,len(g_data)-1):
+    for i in range(1,len(ohashi02)-1):
         #print(l_data[i])
-        genkan_data.append(g_data[i])
-        diff = int(g_data[i+1][1])-int(g_data[i][1])
+        genkan_data.append(ohashi02[i])
+        diff = int(ohashi02[i+1][1])-int(ohashi02[i][1])
 
         #値が取れなかった間隔
-        while diff > 3:
-            diff -= 3
-            add = g_start+int(g_data[i+1][1])-diff
-            day = add//(24*3600)
-            if(day<=9):
-                day = str("0"+str(day))
-            else:
-                day = str(day)
-            add = add%(24*3600)
+        if(diff<3600):
+            while diff > 3:
+                diff -= 3
+                add = g_start+int(ohashi02[i+1][1])-diff
+                day = add//(24*3600)
+                if(day<=9):
+                    day = str("0"+str(day))
+                else:
+                    day = str(day)
+                add = add%(24*3600)
 
-            hou = add//3600
-            if(hou<=9):
-                hou = str("0"+str(hou))
-            else:
-                hou = str(hou)
-            add = add%3600
+                hou = add//3600
+                if(hou<=9):
+                    hou = str("0"+str(hou))
+                else:
+                    hou = str(hou)
+                add = add%3600
 
-            min = add//60
-            if(min<=9):
-                min = str("0"+str(min))
-            else:
-                min = str(min)
-            sec = add%60
-            if(sec<=9):
-                sec = str("0"+str(sec))
-            else:
-                sec = str(sec)
-            
-            date = g_data[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-            data = ["ohashi01",str(int(g_data[i+1][1])-diff),date,"-110"]
-            genkan_data.append(data)
+                min = add//60
+                if(min<=9):
+                    min = str("0"+str(min))
+                else:
+                    min = str(min)
+                sec = add%60
+                if(sec<=9):
+                    sec = str("0"+str(sec))
+                else:
+                    sec = str(sec)
+                
+                date = ohashi02[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
+                data = ["ohashi02",str(int(ohashi02[i+1][1])-diff),date,"-110"]
+                genkan_data.append(data)
 
     response = requests.get(GET_DATE_URL)
     date = response.json()
@@ -213,6 +176,7 @@ def phone_data():
     latest = datetime.strptime(date[0]["time"], '%Y-%m-%d %H:%M:%S')
     last_time = latest
     for i in range(len(living_data)):
+        # print(living_data,last_time)
         for j in range(len(genkan_data)):
             if living_data[i][1]==genkan_data[j][1]:
                 place=""
@@ -231,11 +195,6 @@ def phone_data():
                 
                 #print(living_data[i][1],living_data[i][2],living_data[i][3],genkan_data[j][3],place)
 
-                with open("ble関連プログラム/csv/result_phone.csv", "a", newline="", encoding="utf8") as f:
-
-                    writer = csv.writer(f)
-                    data_list = [living_data[i][1],living_data[i][2],living_data[i][3],genkan_data[j][3],place,num]
-                    writer.writerow(data_list)
 
                 request_body = {"count": living_data[i][1] ,
                 "time": living_data[i][2],    
@@ -246,14 +205,12 @@ def phone_data():
                 }
                 
                 date = datetime.strptime(list(request_body.items())[1][1], '%Y-%m-%d %H:%M:%S')
-                if (latest<date):
-                    latest = date
+                if (last_time<date):
+                    last_time = date
                     response = requests.post(POST_URL, json=request_body)
-
         j+=1
     print("-------------------")
-
 if __name__ == '__main__':#直接yobareru.pyを実行した時だけ、def test()を実行する
-    phone_data()
+    bag_data()
 
 print('モジュール名：{}'.format(__name__))  #実行したモジュール名を表示する

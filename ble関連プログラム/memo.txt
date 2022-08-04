@@ -109,3 +109,5 @@ k_means と　x_means
 各区間の時間データ
 dattype
 ISO
+
+from to みたいにオブジェクトも羅列すべきよね

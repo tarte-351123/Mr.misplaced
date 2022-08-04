@@ -39,35 +39,10 @@ async def create_data(data: models.TimeModel = Body(...)):
     # 201コードを返す
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state":"OK"})
 
-@app.post("/user/", response_description="Add new user", tags=["UserController"])
-async def create_user(user: models.AddUserModel = Body(...)):
-    """
-    ユーザーの登録
 
-    ----------
-    Parameters:  
-    user_id: BLEビーコンのmacアドレス  
-    name: slack名  
-    team: 班名  
-        
-    """
-    # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
-    user = jsonable_encoder(user)
-    user['is_active'] = True
-
-    try:
-        # 既に登録されている名前は登録できないようにする
-        await db["user"].create_index("name", unique=True)
-        await db["user"].insert_one(user)
-    except:
-        raise HTTPException(status_code=400, detail=f"Name: '{user['name']}' is already been registered")
-    # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
-    # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
-    # 201コードを返す
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
 
 @app.post("/ohashi01_phone/", response_description="Add new user", tags=["UserController"])
-async def create_user(user: models.DataModel = Body(...)):
+async def create_user(user: models.MakeDataModel = Body(...)):
 
     # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
     user = jsonable_encoder(user)
@@ -75,17 +50,17 @@ async def create_user(user: models.DataModel = Body(...)):
 
     try:
         # 既に登録されている名前は登録できないようにする
-        await db["ohashi01_phone"].create_index("name", unique=True)
-        await db["ohsahi01_phone"].insert_one(user)
+        await db["ohashi01_phone"].create_index("time", unique=True)
+        await db["ohashi01_phone"].insert_one(user)
     except:
-        raise HTTPException(status_code=400, detail=f"Name: '{user['name']}' is already been registered")
+        raise HTTPException(status_code=400, detail=f"Name: '{user['time']}' is already been registered")
     # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
     # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
     # 201コードを返す
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['time']} Add OK!"})
 
 @app.post("/ohashi01_wallet/", response_description="Add new user", tags=["UserController"])
-async def create_user(user: models.DataModel = Body(...)):
+async def create_user(user: models.MakeDataModel = Body(...)):
 
     # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
     user = jsonable_encoder(user)
@@ -93,17 +68,17 @@ async def create_user(user: models.DataModel = Body(...)):
 
     try:
         # 既に登録されている名前は登録できないようにする
-        await db["ohashi01_wallet"].create_index("name", unique=True)
-        await db["ohsahi01_wallet"].insert_one(user)
+        await db["ohashi01_wallet"].create_index("time", unique=True)
+        await db["ohashi01_wallet"].insert_one(user)
     except:
-        raise HTTPException(status_code=400, detail=f"Name: '{user['name']}' is already been registered")
+        raise HTTPException(status_code=400, detail=f"Name: '{user['time']}' is already been registered")
     # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
     # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
     # 201コードを返す
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['time']} Add OK!"})
 
 @app.post("/ohashi01_bag/", response_description="Add new user", tags=["UserController"])
-async def create_user(user: models.DataModel = Body(...)):
+async def create_user(user: models.MakeDataModel = Body(...)):
 
     # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
     user = jsonable_encoder(user)
@@ -111,14 +86,249 @@ async def create_user(user: models.DataModel = Body(...)):
 
     try:
         # 既に登録されている名前は登録できないようにする
-        await db["ohashi01_bag"].create_index("name", unique=True)
-        await db["ohsahi01_bag"].insert_one(user)
+        await db["ohashi01_bag"].create_index("time", unique=True)
+        await db["ohashi01_bag"].insert_one(user)
     except:
-        raise HTTPException(status_code=400, detail=f"Name: '{user['name']}' is already been registered")
+        raise HTTPException(status_code=400, detail=f"Name: '{user['time']}' is already been registered")
     # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
     # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
     # 201コードを返す
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['name']} Add OK!"})
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['time']} Add OK!"})
+
+@app.post("/ohashi02_phone/", response_description="Add new user", tags=["UserController"])
+async def create_user(user: models.MakeDataModel = Body(...)):
+
+    # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
+    user = jsonable_encoder(user)
+    user['is_active'] = True
+
+    try:
+        # 既に登録されている名前は登録できないようにする
+        await db["ohashi02_phone"].create_index("time", unique=True)
+        await db["ohashi02_phone"].insert_one(user)
+    except:
+        raise HTTPException(status_code=400, detail=f"Name: '{user['time']}' is already been registered")
+    # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
+    # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
+    # 201コードを返す
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['time']} Add OK!"})
+
+@app.post("/ohashi02_wallet/", response_description="Add new user", tags=["UserController"])
+async def create_user(user: models.MakeDataModel = Body(...)):
+
+    # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
+    user = jsonable_encoder(user)
+    user['is_active'] = True
+
+    try:
+        # 既に登録されている名前は登録できないようにする
+        await db["ohashi02_wallet"].create_index("time", unique=True)
+        await db["ohashi02_wallet"].insert_one(user)
+    except:
+        raise HTTPException(status_code=400, detail=f"Name: '{user['time']}' is already been registered")
+    # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
+    # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
+    # 201コードを返す
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['time']} Add OK!"})
+
+@app.post("/ohashi02_bag/", response_description="Add new user", tags=["UserController"])
+async def create_user(user: models.MakeDataModel = Body(...)):
+
+    # Pydanticモデルのようなオブジェクトを受け取り、辞書型にして返す
+    user = jsonable_encoder(user)
+    user['is_active'] = True
+
+    try:
+        # 既に登録されている名前は登録できないようにする
+        await db["ohashi02_bag"].create_index("time", unique=True)
+        await db["ohashi02_bag"].insert_one(user)
+    except:
+        raise HTTPException(status_code=400, detail=f"Name: '{user['time']}' is already been registered")
+    # 受講者をコレクションに挿入したら、inserted_idを使用して正しいドキュメントを検索し、これをJSONResponseに返します。
+    # created_user = await db["user"].find_one({"_id": new_user.inserted_id})
+    # 201コードを返す
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"state": f"{user['time']} Add OK!"})
+
+@app.get("/ohashi01_phone/", response_description="Get a single data", response_model=List[models.MakeDataModel], tags=["UserController"])
+async def show_data(time: str = None,):
+    """
+    ----------
+    ### Parameters:  
+    **hostname**：データを受信した機器の名前
+    **rssi**：電波の強さ 
+    **ble_id**:データを送信した機器の名前
+    **time**:データが送信された時間
+    #### (パラメータが設定されてない場合は全データを返します)
+    """
+
+    # パラメータが設定されていなかったら全てのデータを返す
+    if time is None :
+        print("=====")
+        print(await db["ohashi01_phone"].count_documents({}))
+        if (users := await db["ohashi01_phone"].find().to_list(await db["ohashi01_phone"].count_documents({}))) is not None:
+            return users
+
+    # 該当するhostnameのユーザ情報を返す
+    # await db["user"].count_documents({"user_id": user_id})で該当するデータ数を数えている
+    if (user := await db["ohashi01_phone"].find({"time": time}).to_list(await db["date"].count_documents({"time": time}))) is not None and time is not None:
+        return user
+
+    # 該当するble_idのユーザ情報を返す
+    if (user := await db["ohashi01_phone"].find({"time": time}).to_list(1)) is not None and time is not None:
+        return user
+
+    raise HTTPException(status_code=404, detail=f"user {time} not found")
+
+@app.get("/ohashi01_wallet/", response_description="Get a single data", response_model=List[models.MakeDataModel], tags=["UserController"])
+async def show_data(time: str = None,):
+    """
+    ----------
+    ### Parameters:  
+    **hostname**：データを受信した機器の名前
+    **rssi**：電波の強さ 
+    **ble_id**:データを送信した機器の名前
+    **time**:データが送信された時間
+    #### (パラメータが設定されてない場合は全データを返します)
+    """
+
+    # パラメータが設定されていなかったら全てのデータを返す
+    if time is None :
+        print("=====")
+        print(await db["ohashi01_wallet"].count_documents({}))
+        if (users := await db["ohashi01_wallet"].find().to_list(await db["ohashi01_wallet"].count_documents({}))) is not None:
+            return users
+
+    # 該当するhostnameのユーザ情報を返す
+    # await db["user"].count_documents({"user_id": user_id})で該当するデータ数を数えている
+    if (user := await db["ohashi01_wallet"].find({"time": time}).to_list(await db["date"].count_documents({"time": time}))) is not None and time is not None:
+        return user
+
+    # 該当するble_idのユーザ情報を返す
+    if (user := await db["ohashi01_wallet"].find({"time": time}).to_list(1)) is not None and time is not None:
+        return user
+
+    raise HTTPException(status_code=404, detail=f"user {time} not found")
+
+@app.get("/ohashi01_bag/", response_description="Get a single data", response_model=List[models.MakeDataModel], tags=["UserController"])
+async def show_data(time: str = None,):
+    """
+    ----------
+    ### Parameters:  
+    **hostname**：データを受信した機器の名前
+    **rssi**：電波の強さ 
+    **ble_id**:データを送信した機器の名前
+    **time**:データが送信された時間
+    #### (パラメータが設定されてない場合は全データを返します)
+    """
+
+    # パラメータが設定されていなかったら全てのデータを返す
+    if time is None :
+        print("=====")
+        print(await db["ohashi01_bag"].count_documents({}))
+        if (users := await db["ohashi01_bag"].find().to_list(await db["ohashi01_bag"].count_documents({}))) is not None:
+            return users
+
+    # 該当するhostnameのユーザ情報を返す
+    # await db["user"].count_documents({"user_id": user_id})で該当するデータ数を数えている
+    if (user := await db["ohashi01_bag"].find({"time": time}).to_list(await db["date"].count_documents({"time": time}))) is not None and time is not None:
+        return user
+
+    # 該当するble_idのユーザ情報を返す
+    if (user := await db["ohashi01_bag"].find({"time": time}).to_list(1)) is not None and time is not None:
+        return user
+
+    raise HTTPException(status_code=404, detail=f"user {time} not found")
+
+
+@app.get("/ohashi02_phone/", response_description="Get a single data", response_model=List[models.MakeDataModel], tags=["UserController"])
+async def show_data(time: str = None,):
+    """
+    ----------
+    ### Parameters:  
+    **hostname**：データを受信した機器の名前
+    **rssi**：電波の強さ 
+    **ble_id**:データを送信した機器の名前
+    **time**:データが送信された時間
+    #### (パラメータが設定されてない場合は全データを返します)
+    """
+
+    # パラメータが設定されていなかったら全てのデータを返す
+    if time is None :
+        print("=====")
+        print(await db["ohashi02_phone"].count_documents({}))
+        if (users := await db["ohashi02_phone"].find().to_list(await db["ohashi02_phone"].count_documents({}))) is not None:
+            return users
+
+    # 該当するhostnameのユーザ情報を返す
+    # await db["user"].count_documents({"user_id": user_id})で該当するデータ数を数えている
+    if (user := await db["ohashi02_phone"].find({"time": time}).to_list(await db["date"].count_documents({"time": time}))) is not None and time is not None:
+        return user
+
+    # 該当するble_idのユーザ情報を返す
+    if (user := await db["ohashi02_phone"].find({"time": time}).to_list(1)) is not None and time is not None:
+        return user
+
+    raise HTTPException(status_code=404, detail=f"user {time} not found")
+
+@app.get("/ohashi02_wallet/", response_description="Get a single data", response_model=List[models.MakeDataModel], tags=["UserController"])
+async def show_data(time: str = None,):
+    """
+    ----------
+    ### Parameters:  
+    **hostname**：データを受信した機器の名前
+    **rssi**：電波の強さ 
+    **ble_id**:データを送信した機器の名前
+    **time**:データが送信された時間
+    #### (パラメータが設定されてない場合は全データを返します)
+    """
+
+    # パラメータが設定されていなかったら全てのデータを返す
+    if time is None :
+        print("=====")
+        print(await db["ohashi02_wallet"].count_documents({}))
+        if (users := await db["ohashi02_wallet"].find().to_list(await db["ohashi01_wallet"].count_documents({}))) is not None:
+            return users
+
+    # 該当するhostnameのユーザ情報を返す
+    # await db["user"].count_documents({"user_id": user_id})で該当するデータ数を数えている
+    if (user := await db["ohashi02_wallet"].find({"time": time}).to_list(await db["date"].count_documents({"time": time}))) is not None and time is not None:
+        return user
+
+    # 該当するble_idのユーザ情報を返す
+    if (user := await db["ohashi02_wallet"].find({"time": time}).to_list(1)) is not None and time is not None:
+        return user
+
+    raise HTTPException(status_code=404, detail=f"user {time} not found")
+
+@app.get("/ohashi02_bag/", response_description="Get a single data", response_model=List[models.MakeDataModel], tags=["UserController"])
+async def show_data(time: str = None,):
+    """
+    ----------
+    ### Parameters:  
+    **hostname**：データを受信した機器の名前
+    **rssi**：電波の強さ 
+    **ble_id**:データを送信した機器の名前
+    **time**:データが送信された時間
+    #### (パラメータが設定されてない場合は全データを返します)
+    """
+
+    # パラメータが設定されていなかったら全てのデータを返す
+    if time is None :
+        print("=====")
+        print(await db["ohashi02_bag"].count_documents({}))
+        if (users := await db["ohashi02_bag"].find().to_list(await db["ohashi01_bag"].count_documents({}))) is not None:
+            return users
+
+    # 該当するhostnameのユーザ情報を返す
+    # await db["user"].count_documents({"user_id": user_id})で該当するデータ数を数えている
+    if (user := await db["ohashi02_bag"].find({"time": time}).to_list(await db["date"].count_documents({"time": time}))) is not None and time is not None:
+        return user
+
+    # 該当するble_idのユーザ情報を返す
+    if (user := await db["ohashi02_bag"].find({"time": time}).to_list(1)) is not None and time is not None:
+        return user
+
+    raise HTTPException(status_code=404, detail=f"user {time} not found")
 
 @app.post("/phone/", response_description="Add new data", tags=["dataController"])
 async def create_data(data: models.AddDataModel = Body(...)):

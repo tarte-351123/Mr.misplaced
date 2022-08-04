@@ -2,6 +2,7 @@ def bag_data():
     import requests
     import csv
     import pymongo
+    import re
     from pymongo import MongoClient
     from datetime import datetime
     GET_URL = "http://localhost:8000/bag/"
@@ -14,28 +15,16 @@ def bag_data():
     for i in range (len(data)):
         requests.delete(POST_URL)
 
+
     # POSTリクエストを、リクエストボディ付きで送信する
     response = requests.get(GET_URL)
-
     # dataというList型変数に全てのデータを格納
     data = response.json()
     #data.reverse()
 
-
     #より近いラズパイの hostname を格納
     near = ""
     last_time = ""
-    with open("ble関連プログラム/csv/ohashi01_bag.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                tag = (["hostname","count", "time","rssi"])
-                writer.writerow(tag)
-    with open("ble関連プログラム/csv/ohashi02_bag.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                tag = (["hostname","count","time", "rssi"])
-                writer.writerow(tag)
-    with open("ble関連プログラム/csv/result_bag.csv", "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                tag = (["count","time","living_rssi","genkan_rssi","result"])
 
     day = int(data[0]["time"][8:10])*3600*24
     hour = int(data[0]["time"][11:13])*3600
@@ -44,9 +33,10 @@ def bag_data():
     start_time = day+hour + minute +second
     n1=0
     n2=0
-    result=0
-
     count = 1
+
+    ohashi01 = []
+    ohashi02 = []
 
     for i in data:
         day = int(i["time"][8:10])*3600*24
@@ -69,72 +59,43 @@ def bag_data():
         # 次のデータと時間が違う場合
         elif i["time"] != data[count]["time"]:
             near = i["hostname"]
-
-
+            
         last_time = i["time"]
 
         if i["hostname"]=="ohashi01":
-            with open("ble関連プログラム/csv/ohashi01_bag.csv", "a", newline="", encoding="utf8") as f:
-
-                writer = csv.writer(f)
-                data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
-                writer.writerow(data_list)
-                n1 +=3
+            data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
+            ohashi01.append(data_list)
 
         elif i["hostname"]=="ohashi02":
-            with open("ble関連プログラム/csv/ohashi02_bag.csv", "a", newline="", encoding="utf8") as f:
-
-                writer = csv.writer(f)
-                data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
-                writer.writerow(data_list)
-                n2 +=3
+            data_list = [i["hostname"], time_diff, i["time"], i["rssi"]]
+            ohashi02.append(data_list)
+            
         if count < len(data)-3:
                 count +=1
 
-    f.close()
-            
-
-
-    import csv
-    import re
-    with open("ble関連プログラム/csv/ohashi01_bag.csv", encoding='utf-8', newline='') as f:
-        csvreader = csv.reader(f)
-        l_data=[]
-        #データのこぴー
-        for row in csvreader:
-            l_data.append(row)
-
-    with open("ble関連プログラム/csv/ohashi02_bag.csv", encoding='utf-8', newline='') as f:
-        csvreader = csv.reader(f)
-        g_data=[]
-        #データのこぴー
-        for row in csvreader:
-            g_data.append(row)
-
-
-    l_sec = int(re.split('[- /:]', l_data[1][2])[5])
-    l_min = int(re.split('[- /:]', l_data[1][2])[4])*60
-    l_hou = int(re.split('[- /:]', l_data[1][2])[3])*3600
-    l_day = int(re.split('[- /:]', l_data[1][2])[2])*24*3600
+    l_sec = int(re.split('[- /:]', ohashi01[1][2])[5])
+    l_min = int(re.split('[- /:]', ohashi01[1][2])[4])*60
+    l_hou = int(re.split('[- /:]', ohashi01[1][2])[3])*3600
+    l_day = int(re.split('[- /:]', ohashi01[1][2])[2])*24*3600
     l_start = (l_sec+l_min+l_hou+l_day)
 
-    g_sec = int(re.split('[- /:]', g_data[1][2])[5])
-    g_min = int(re.split('[- /:]', g_data[1][2])[4])*60
-    g_hou = int(re.split('[- /:]', g_data[1][2])[3])*3600
-    g_day = int(re.split('[- /:]', g_data[1][2])[2])*24*3600
+    g_sec = int(re.split('[- /:]', ohashi02[1][2])[5])
+    g_min = int(re.split('[- /:]', ohashi02[1][2])[4])*60
+    g_hou = int(re.split('[- /:]', ohashi02[1][2])[3])*3600
+    g_day = int(re.split('[- /:]', ohashi02[1][2])[2])*24*3600
     g_start = (g_sec+g_min+g_hou+g_day)
 
     living_data=[]
-    for i in range(1,len(l_data)-1):
+    for i in range(1,len(ohashi01)-1):
         #print(l_data[i])
-        living_data.append(l_data[i])
-        diff = int(l_data[i+1][1])-int(l_data[i][1])
+        living_data.append(ohashi01[i])
+        diff = int(ohashi01[i+1][1])-int(ohashi01[i][1])
 
         #値が取れなかった間隔
         if(diff<3600):
             while diff > 3:
                 diff -= 3
-                add = l_start+int(l_data[i+1][1])-diff
+                add = l_start+int(ohashi01[i+1][1])-diff
                 day = add//(24*3600)
                 if(day<=9):
                     day = str("0"+str(day))
@@ -160,22 +121,22 @@ def bag_data():
                 else:
                     sec = str(sec)
                 
-                date = l_data[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-                data = ["ohashi01",str(int(l_data[i+1][1])-diff),date,"-110"]
+                date = ohashi01[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
+                data = ["ohashi01",str(int(ohashi01[i+1][1])-diff),date,"-110"]
                 living_data.append(data)
 
             
     genkan_data=[]
-    for i in range(1,len(g_data)-1):
+    for i in range(1,len(ohashi02)-1):
         #print(l_data[i])
-        genkan_data.append(g_data[i])
-        diff = int(g_data[i+1][1])-int(g_data[i][1])
+        genkan_data.append(ohashi02[i])
+        diff = int(ohashi02[i+1][1])-int(ohashi02[i][1])
 
         #値が取れなかった間隔
         if(diff<3600):
             while diff > 3:
                 diff -= 3
-                add = g_start+int(g_data[i+1][1])-diff
+                add = g_start+int(ohashi02[i+1][1])-diff
                 day = add//(24*3600)
                 if(day<=9):
                     day = str("0"+str(day))
@@ -201,8 +162,8 @@ def bag_data():
                 else:
                     sec = str(sec)
                 
-                date = g_data[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-                data = ["ohashi01",str(int(g_data[i+1][1])-diff),date,"-110"]
+                date = ohashi02[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
+                data = ["ohashi02",str(int(ohashi02[i+1][1])-diff),date,"-110"]
                 genkan_data.append(data)
 
     response = requests.get(GET_DATE_URL)
@@ -230,12 +191,6 @@ def bag_data():
                 
                 #print(living_data[i][1],living_data[i][2],living_data[i][3],genkan_data[j][3],place)
 
-                with open("ble関連プログラム/csv/result_bag.csv", "a", newline="", encoding="utf8") as f:
-
-                    writer = csv.writer(f)
-                    data_list = [living_data[i][1],living_data[i][2],living_data[i][3],genkan_data[j][3],place,num]
-                    writer.writerow(data_list)
-                    #print(data_list)
 
                 request_body = {"count": living_data[i][1] ,
                 "time": living_data[i][2],    
@@ -246,9 +201,8 @@ def bag_data():
                 }
                 
                 date = datetime.strptime(list(request_body.items())[1][1], '%Y-%m-%d %H:%M:%S')
-                print()
-                if (latest<date):
-                    latest = date
+                if (last_time<date):
+                    last_time = date
                     response = requests.post(POST_URL, json=request_body)
         j+=1
     print("-------------------")
