@@ -1,6 +1,5 @@
 def bag_data():
     import requests
-    import csv
     import pymongo
     import re
     from pymongo import MongoClient
@@ -15,7 +14,6 @@ def bag_data():
     for i in range (len(data)):
         requests.delete(POST_URL)
 
-
     # POSTリクエストを、リクエストボディ付きで送信する
     response = requests.get(GET_URL)
     # dataというList型変数に全てのデータを格納
@@ -23,7 +21,6 @@ def bag_data():
     #data.reverse()
 
     #より近いラズパイの hostname を格納
-    near = ""
     last_time = ""
 
     day = int(data[0]["time"][8:10])*3600*24
@@ -31,8 +28,6 @@ def bag_data():
     minute = int(data[0]["time"][14:16])*60
     second = int(data[0]["time"][17:20])
     start_time = day+hour + minute +second
-    n1=0
-    n2=0
     count = 1
 
     ohashi01 = []
@@ -122,7 +117,7 @@ def bag_data():
                     sec = str(sec)
                 
                 date = ohashi01[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-                data = ["ohashi01",str(int(ohashi01[i+1][1])-diff),date,"-110"]
+                data = ["ohashi01",int(ohashi01[i+1][1])-diff,date,"-110"]
                 living_data.append(data)
 
             
@@ -163,7 +158,7 @@ def bag_data():
                     sec = str(sec)
                 
                 date = ohashi02[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-                data = ["ohashi02",str(int(ohashi02[i+1][1])-diff),date,"-110"]
+                data = ["ohashi02",int(ohashi02[i+1][1])-diff,date,"-110"]
                 genkan_data.append(data)
 
     response = requests.get(GET_DATE_URL)
@@ -190,8 +185,6 @@ def bag_data():
                     place = ""
                 
                 #print(living_data[i][1],living_data[i][2],living_data[i][3],genkan_data[j][3],place)
-
-
                 request_body = {"count": living_data[i][1] ,
                 "time": living_data[i][2],    
                 "rssi1": living_data[i][3],

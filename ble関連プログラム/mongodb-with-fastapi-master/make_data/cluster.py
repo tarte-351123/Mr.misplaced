@@ -205,7 +205,7 @@ def cluster():
                 "dateType": "休日",
                 "normalDistribution": {
                     "mean": str('{0:02}'.format(int(mean_x/60)))+":"+str('{0:02}'.format(int(mean_x%60))),
-                    "std": str(int(stdev(index_x))),
+                    "sd": str(int(stdev(index_x))),
                     "range": [{
                     "from_": a,
                     "to_": aa
@@ -335,7 +335,7 @@ def cluster():
                 "dateType": "平日",
                 "normalDistribution": {
                     "mean": str('{0:02}'.format(int(mean_x/60)))+":"+str('{0:02}'.format(int(mean_x%60))),
-                    "std": str(int(stdev(index_x))),
+                    "sd": str(int(stdev(index_x))),
                     "range": [{
                     "from_": a,
                     "to_": aa

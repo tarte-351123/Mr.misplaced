@@ -17,8 +17,6 @@ from sklearn.cluster import KMeans
 from datetime import datetime as dt
 from matplotlib import dates as mdates
 
-filename = 'csv/go_out.csv'
-
 def worker():
     print(time.time())
     time.sleep(8)
@@ -30,6 +28,7 @@ def scheduler(interval, f, wait = True):
         bag_data.bag_data()
         wallet_data.wallet_data()
         phone_data.phone_data()
+        data_fix.data_fix()
         data_fix.data_fix()
         pattern.pattern()
         cluster.cluster()
@@ -43,5 +42,5 @@ def scheduler(interval, f, wait = True):
 
 
 #何秒に一回処理するか
-minute = 180
+minute = 1000
 scheduler(minute, worker, True)

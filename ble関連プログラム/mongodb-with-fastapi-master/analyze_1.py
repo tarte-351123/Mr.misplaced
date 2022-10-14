@@ -18,7 +18,7 @@ from matplotlib import dates as mdates
 import japanize_matplotlib
 from sympy import I, true
 from statistics import mean, median,variance,stdev
-filename = 'csv/go_out.csv'
+filename = 'ble関連プログラム/csv/go_out.csv'
 
 pattern = []
 # 配列のコピー
@@ -71,9 +71,9 @@ for i in pattern:
 
 time_list_h = []    
 time_list_d = []    
-with open("csv/time_h.csv", "w", newline="", encoding="utf8") as f:
+with open("ble関連プログラム/csv/time_h.csv", "w", newline="", encoding="utf8") as f:
         writer = csv.writer(f) 
-with open("csv/time_d.csv", "w", newline="", encoding="utf8") as f:
+with open("ble関連プログラム/csv/time_d.csv", "w", newline="", encoding="utf8") as f:
         writer = csv.writer(f) 
 
 for i in range(24):
@@ -112,14 +112,14 @@ for i in range(24):
 
     data_list = [i,time_count_h[i]]
     if(time_count_h[i]!=0):
-        with open("csv/time_h.csv", "a", newline="", encoding="utf8") as f:
+        with open("ble関連プログラム/csv/time_h.csv", "a", newline="", encoding="utf8") as f:
             writer = csv.writer(f) 
             writer.writerow(data_list)
         time_list_h.append(data_list)
 
     data_list = [i,time_count_d[i]]
     if(time_count_d[i]!=0):
-        with open("csv/time_d.csv", "a", newline="", encoding="utf8") as f:
+        with open("ble関連プログラム/csv/time_d.csv", "a", newline="", encoding="utf8") as f:
             writer = csv.writer(f) 
             writer.writerow(data_list)
         time_list_h.append(data_list)

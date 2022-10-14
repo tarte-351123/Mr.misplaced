@@ -19,7 +19,6 @@ def phone_data():
     for i in range (len(data)):
         requests.delete(POST_URL)
 
-
     # POSTリクエストを、リクエストボディ付きで送信する
     response = requests.get(GET_URL)
     # dataというList型変数に全てのデータを格納
@@ -27,7 +26,6 @@ def phone_data():
     #data.reverse()
 
     #より近いラズパイの hostname を格納
-    near = ""
     last_time = ""
 
     day = int(data[0]["time"][8:10])*3600*24
@@ -35,8 +33,6 @@ def phone_data():
     minute = int(data[0]["time"][14:16])*60
     second = int(data[0]["time"][17:20])
     start_time = day+hour + minute +second
-    n1=0
-    n2=0
     count = 1
 
     ohashi01 = []
@@ -126,7 +122,7 @@ def phone_data():
                     sec = str(sec)
                 
                 date = ohashi01[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-                data = ["ohashi01",str(int(ohashi01[i+1][1])-diff),date,"-110"]
+                data = ["ohashi01",int(ohashi01[i+1][1])-diff,date,"-110"]
                 living_data.append(data)
 
             
@@ -167,7 +163,7 @@ def phone_data():
                     sec = str(sec)
                 
                 date = ohashi02[i][2][0:8] + str(day)+ " "+str(hou)+":"+str(min)+":"+str(sec)
-                data = ["ohashi02",str(int(ohashi02[i+1][1])-diff),date,"-110"]
+                data = ["ohashi02",int(ohashi02[i+1][1])-diff,date,"-110"]
                 genkan_data.append(data)
 
     response = requests.get(GET_DATE_URL)
@@ -176,7 +172,6 @@ def phone_data():
     latest = datetime.strptime(date[0]["time"], '%Y-%m-%d %H:%M:%S')
     last_time = latest
     for i in range(len(living_data)):
-        # print(living_data,last_time)
         for j in range(len(genkan_data)):
             if living_data[i][1]==genkan_data[j][1]:
                 place=""
@@ -208,9 +203,10 @@ def phone_data():
                 if (last_time<date):
                     last_time = date
                     response = requests.post(POST_URL, json=request_body)
+                    
         j+=1
     print("-------------------")
 if __name__ == '__main__':#直接yobareru.pyを実行した時だけ、def test()を実行する
-    bag_data()
+    phone_data()
 
 print('モジュール名：{}'.format(__name__))  #実行したモジュール名を表示する
